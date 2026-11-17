@@ -14,6 +14,7 @@ jobs:
   backend:
     name: Backend (tests + build)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     services:
       mongo:
         image: mongo:7
@@ -55,6 +56,7 @@ jobs:
   frontend:
     name: Frontend (tests + build)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: frontend
@@ -84,6 +86,7 @@ jobs:
     needs: [backend, frontend]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Trigger Render deploy (dealdesk)
         run: |
@@ -107,7 +110,16 @@ jobs:
           VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
 
       - name: Wait for deploys to finish
-        run: sleep 120
+        run: |
+          set -e
+          for i in $(seq 1 24); do
+            be=$(curl -s -o /dev/null -w "%{http_code}" https://dealdesk-api-ys6i.onrender.com/health || echo 000)
+            fe=$(curl -s -o /dev/null -w "%{http_code}" https://deal-desk-blond-psi.vercel.app/ || echo 000)
+            echo "attempt $i: backend=$be frontend=$fe"
+            if [ "$be" = "200" ] && [ "$fe" = "200" ]; then echo "both live"; exit 0; fi
+            sleep 10
+          done
+          echo "timed out waiting for deploys"; exit 1
 
       - name: Verify backend health endpoints
         run: |
