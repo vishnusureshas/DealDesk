@@ -16,6 +16,7 @@ import DealsPage from './pages/DealsPage';
 import InvoiceDetailPage from './pages/InvoiceDetailPage';
 import InvoicesPage from './pages/InvoicesPage';
 import LoginPage from './pages/LoginPage';
+import LoadingScreen from './components/LoadingScreen';
 import NotFoundPage from './pages/NotFoundPage';
 import { useAuthStore } from './stores/authStore';
 import { connectSocket } from './realtime/socket';
@@ -69,6 +70,12 @@ function ShellRoute({ permission, permissions, children }) {
 }
 
 export default function App() {
+  const authStatus = useAuthStore((state) => state.status);
+
+  if (authStatus === 'loading') {
+    return <LoadingScreen label="Restoring your session" />;
+  }
+
   return (
     <BrowserRouter>
       <SessionBootstrapper />

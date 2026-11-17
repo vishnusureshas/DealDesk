@@ -22,6 +22,7 @@ import { ApiError } from '../api/client';
 import { errorMessage } from '../lib/errors';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { Button, Field, Input, Toaster } from '../components/ui';
+import LoadingScreen from '../components/LoadingScreen';
 
 const FEATURES = [
   { icon: ShieldCheck, title: 'Role-scoped', detail: 'permissions' },
@@ -45,6 +46,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
 
   const login = useAuthStore((state) => state.login);
   const user = useAuthStore((state) => state.user);
@@ -55,6 +57,10 @@ export default function LoginPage() {
   useDocumentTitle('Sign in');
 
   const from = location.state?.from || '/';
+
+  if (showLoading) {
+    return <LoadingScreen label="Signing you in" />;
+  }
 
   if (user) {
     return <Navigate to={from} replace />;
@@ -67,7 +73,10 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-      navigate(from, { replace: true });
+      setSubmitting(false);
+      setShowLoading(true);
+      window.setTimeout(() => navigate(from, { replace: true }), 900);
+      return;
     } catch (loginError) {
       setError(
         loginError instanceof ApiError && loginError.status === 401
@@ -80,8 +89,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="grid min-h-[100dvh] lg:h-[100dvh] lg:grid-cols-2">
-      <section className="relative hidden overflow-hidden bg-ink-900 lg:flex lg:flex-col lg:justify-between lg:p-8 xl:p-10">
+    <div className="grid h-dvh overflow-hidden lg:grid-cols-2">
+      <section className="relative hidden h-full overflow-hidden bg-ink-900 lg:flex lg:flex-col lg:justify-between lg:p-6 xl:p-8">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 opacity-70"
@@ -232,7 +241,7 @@ export default function LoginPage() {
         </div>
       </section>
 
-      <section className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden bg-canvas px-4 py-5 sm:px-8 sm:py-8">
+      <section className="relative flex h-full items-center justify-center overflow-hidden bg-canvas px-4 py-4 sm:px-8">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -right-32 -top-32 h-80 w-80 rounded-full bg-brand-100/70 blur-3xl"
