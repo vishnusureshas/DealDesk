@@ -16,7 +16,15 @@ export function createApp() {
   app.use(morgan('dev'));
 
   app.get('/health', (_req, res) => {
-    res.status(200).json({ status: 'ok', service: 'billport' });
+    res.status(200).json({
+      status: 'ok',
+      service: 'billport',
+      commit:
+        process.env.RENDER_GIT_COMMIT ||
+        process.env.GIT_SHA ||
+        process.env.COMMIT_SHA ||
+        null,
+    });
   });
 
   app.use('/billing', billingRoutes);

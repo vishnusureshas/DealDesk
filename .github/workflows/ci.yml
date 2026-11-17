@@ -80,56 +80,68 @@ jobs:
         env:
           VITE_API_URL: ${{ vars.VITE_API_URL || 'https://dealdesk-api-ys6i.onrender.com' }}
           VITE_BILLPORT_URL: ${{ vars.VITE_BILLPORT_URL || 'https://dealdesk-billport-78wi.onrender.com' }}
+          VITE_GIT_SHA: ${{ github.sha }}
 
   deploy:
     name: Deploy (Render + Vercel + verify)
     needs: [backend, frontend]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Trigger Render deploy (dealdesk)
         run: |
-          if [ -z "$RENDER_DEPLOY_HOOK_DEALDESK" ]; then echo 'skip: no hook configured'; exit 0; fi
+          if [ -z "$RENDER_DEPLOY_HOOK_DEALDESK" ]; then echo 'skip: no hook configured (relying on auto-deploy)'; exit 0; fi
           curl -fsS -X POST "$RENDER_DEPLOY_HOOK_DEALDESK"
         env:
           RENDER_DEPLOY_HOOK_DEALDESK: ${{ secrets.RENDER_DEPLOY_HOOK_DEALDESK }}
 
       - name: Trigger Render deploy (billport)
         run: |
-          if [ -z "$RENDER_DEPLOY_HOOK_BILLPORT" ]; then echo 'skip: no hook configured'; exit 0; fi
+          if [ -z "$RENDER_DEPLOY_HOOK_BILLPORT" ]; then echo 'skip: no hook configured (relying on auto-deploy)'; exit 0; fi
           curl -fsS -X POST "$RENDER_DEPLOY_HOOK_BILLPORT"
         env:
           RENDER_DEPLOY_HOOK_BILLPORT: ${{ secrets.RENDER_DEPLOY_HOOK_BILLPORT }}
 
       - name: Trigger Vercel deploy (frontend)
         run: |
-          if [ -z "$VERCEL_DEPLOY_HOOK" ]; then echo 'skip: no hook configured'; exit 0; fi
+          if [ -z "$VERCEL_DEPLOY_HOOK" ]; then echo 'skip: no hook configured (relying on auto-deploy)'; exit 0; fi
           curl -fsS -X POST "$VERCEL_DEPLOY_HOOK"
         env:
           VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
 
-      - name: Wait for deploys to finish
+      - name: Wait for deploys to land (commit SHA match)
         run: |
           set -e
-          for i in $(seq 1 24); do
-            be=$(curl -s -o /dev/null -w "%{http_code}" https://dealdesk-api-ys6i.onrender.com/health || echo 000)
-            fe=$(curl -s -o /dev/null -w "%{http_code}" https://deal-desk-blond-psi.vercel.app/ || echo 000)
-            echo "attempt $i: backend=$be frontend=$fe"
-            if [ "$be" = "200" ] && [ "$fe" = "200" ]; then echo "both live"; exit 0; fi
+          TARGET="${GITHUB_SHA:0:12}"
+          echo "target commit: $TARGET"
+          for i in $(seq 1 36); do
+            be_commit=$(curl -s https://dealdesk-api-ys6i.onrender.com/health | python3 -c "import sys,json; print((json.load(sys.stdin).get('commit') or '')[:12])" 2>/dev/null || echo "")
+            bp_commit=$(curl -s https://dealdesk-billport-78wi.onrender.com/health | python3 -c "import sys,json; print((json.load(sys.stdin).get('commit') or '')[:12])" 2>/dev/null || echo "")
+            fe_html=$(curl -s https://deal-desk-blond-psi.vercel.app/ || echo "")
+            fe_commit=$(echo "$fe_html" | grep -o 'name="app-commit" content="[^"]*"' | sed 's/.*content="//;s/"//' | cut -c1-12)
+            echo "attempt $i: dealdesk=$be_commit billport=$bp_commit frontend=$fe_commit (target=$TARGET)"
+            if [ "$be_commit" = "$TARGET" ] && [ "$fe_commit" = "$TARGET" ]; then
+              echo "frontend + dealdesk are live at $TARGET"
+              # billport is best-effort (may lag); record but don't block
+              if [ "$bp_commit" != "$TARGET" ]; then echo "note: billport still at $bp_commit"; fi
+              exit 0
+            fi
             sleep 10
           done
-          echo "timed out waiting for deploys"; exit 1
+          echo "timed out waiting for deploys to land"; exit 1
+        env:
+          GITHUB_SHA: ${{ github.sha }}
 
       - name: Verify backend health endpoints
         run: |
           set -e
-          curl -fsS https://dealdesk-api-ys6i.onrender.com/health
-          echo
-          curl -fsS https://dealdesk-billport-78wi.onrender.com/health
-          echo
-          curl -fsS https://dealdesk-api-ys6i.onrender.com/health/seed
-          echo
+          echo "== dealdesk /health =="
+          curl -fsS https://dealdesk-api-ys6i.onrender.com/health; echo
+          echo "== dealdesk /health/seed =="
+          curl -fsS https://dealdesk-api-ys6i.onrender.com/health/seed; echo
+          echo "== billport /health =="
+          curl -fsS https://dealdesk-billport-78wi.onrender.com/health; echo
 
       - name: Verify frontend (Vercel)
         run: |
@@ -140,3 +152,8 @@ jobs:
           echo "/login -> $code"; test "$code" = "200"
           code=$(curl -s -o /dev/null -w "%{http_code}" https://deal-desk-blond-psi.vercel.app/deals)
           echo "/deals -> $code"; test "$code" = "200"
+          # confirm the deployed bundle is the pushed commit
+          fe_commit=$(curl -s https://deal-desk-blond-psi.vercel.app/ | grep -o 'name="app-commit" content="[^"]*"' | sed 's/.*content="//;s/"//' | cut -c1-12)
+          target="${GITHUB_SHA:0:12}"
+          echo "deployed frontend commit: $fe_commit (target: $target)"
+          test "$fe_commit" = "$target"

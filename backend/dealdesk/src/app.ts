@@ -41,7 +41,15 @@ export function createApp() {
   app.use(express.static(path.join(__dirname, '..', 'public')));
 
   app.get('/health', (_req, res) => {
-    res.status(200).json({ status: 'ok', service: 'dealdesk' });
+    res.status(200).json({
+      status: 'ok',
+      service: 'dealdesk',
+      commit:
+        process.env.RENDER_GIT_COMMIT ||
+        process.env.GIT_SHA ||
+        process.env.COMMIT_SHA ||
+        null,
+    });
   });
 
   // Read-only diagnostic: the seeded demo accounts must exist in the database
