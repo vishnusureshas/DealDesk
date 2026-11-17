@@ -89,6 +89,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Trigger Render deploy (dealdesk)
         run: |
           if [ -z "$RENDER_DEPLOY_HOOK_DEALDESK" ]; then echo 'skip: no hook configured (relying on auto-deploy)'; exit 0; fi
@@ -121,10 +125,14 @@ jobs:
             fe_html=$(curl -s https://deal-desk-blond-psi.vercel.app/ || echo "")
             fe_commit=$(echo "$fe_html" | grep -o 'name="app-commit" content="[^"]*"' | sed 's/.*content="//;s/"//' | cut -c1-12)
             echo "attempt $i: dealdesk=$be_commit billport=$bp_commit frontend=$fe_commit (target=$TARGET)"
-            if [ "$be_commit" = "$TARGET" ] && [ "$fe_commit" = "$TARGET" ]; then
-              echo "frontend + dealdesk are live at $TARGET"
-              # billport is best-effort (may lag); record but don't block
-              if [ "$bp_commit" != "$TARGET" ]; then echo "note: billport still at $bp_commit"; fi
+            # Frontend (Vercel) rebuilds on every push -> must match exactly.
+            # Backends (Render) only rebuild when their code changes; otherwise
+            # their commit must be an ancestor of (or equal to) the target.
+            be_ok=false; bp_ok=false
+            if [ -n "$be_commit" ] && git merge-base --is-ancestor "$be_commit" "$GITHUB_SHA" 2>/dev/null; then be_ok=true; fi
+            if [ -n "$bp_commit" ] && git merge-base --is-ancestor "$bp_commit" "$GITHUB_SHA" 2>/dev/null; then bp_ok=true; fi
+            if [ "$fe_commit" = "$TARGET" ] && [ "$be_ok" = "true" ] && [ "$bp_ok" = "true" ]; then
+              echo "frontend is live at $TARGET; backends are at-or-before target (dealdesk=$be_commit billport=$bp_commit)"
               exit 0
             fi
             sleep 10
@@ -142,6 +150,12 @@ jobs:
           curl -fsS https://dealdesk-api-ys6i.onrender.com/health/seed; echo
           echo "== billport /health =="
           curl -fsS https://dealdesk-billport-78wi.onrender.com/health; echo
+          # deployed backend commits must be at-or-before the pushed commit
+          be_commit=$(curl -s https://dealdesk-api-ys6i.onrender.com/health | python3 -c "import sys,json; print((json.load(sys.stdin).get('commit') or '')[:12])")
+          bp_commit=$(curl -s https://dealdesk-billport-78wi.onrender.com/health | python3 -c "import sys,json; print((json.load(sys.stdin).get('commit') or '')[:12])")
+          test -n "$be_commit" && git merge-base --is-ancestor "$be_commit" "$GITHUB_SHA"
+          test -n "$bp_commit" && git merge-base --is-ancestor "$bp_commit" "$GITHUB_SHA"
+          echo "backend commits ok: dealdesk=$be_commit billport=$bp_commit (target ${GITHUB_SHA:0:12})"
 
       - name: Verify frontend (Vercel)
         run: |
