@@ -86,20 +86,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Render deploy (dealdesk)
-        if: ${{ secrets.RENDER_DEPLOY_HOOK_DEALDESK != '' }}
-        run: curl -fsS -X POST "$RENDER_DEPLOY_HOOK_DEALDESK"
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK_DEALDESK" ]; then echo 'skip: no hook configured'; exit 0; fi
+          curl -fsS -X POST "$RENDER_DEPLOY_HOOK_DEALDESK"
         env:
           RENDER_DEPLOY_HOOK_DEALDESK: ${{ secrets.RENDER_DEPLOY_HOOK_DEALDESK }}
 
       - name: Trigger Render deploy (billport)
-        if: ${{ secrets.RENDER_DEPLOY_HOOK_BILLPORT != '' }}
-        run: curl -fsS -X POST "$RENDER_DEPLOY_HOOK_BILLPORT"
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK_BILLPORT" ]; then echo 'skip: no hook configured'; exit 0; fi
+          curl -fsS -X POST "$RENDER_DEPLOY_HOOK_BILLPORT"
         env:
           RENDER_DEPLOY_HOOK_BILLPORT: ${{ secrets.RENDER_DEPLOY_HOOK_BILLPORT }}
 
       - name: Trigger Vercel deploy (frontend)
-        if: ${{ secrets.VERCEL_DEPLOY_HOOK != '' }}
-        run: curl -fsS -X POST "$VERCEL_DEPLOY_HOOK"
+        run: |
+          if [ -z "$VERCEL_DEPLOY_HOOK" ]; then echo 'skip: no hook configured'; exit 0; fi
+          curl -fsS -X POST "$VERCEL_DEPLOY_HOOK"
         env:
           VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
 
