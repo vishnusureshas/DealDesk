@@ -293,6 +293,7 @@ export default function AdminPage() {
   return (
     <div className="space-y-4">
       <PageHeader
+        eyebrow="Administration"
         title="Admin"
         description="Approval bands drive new discount requests; roles define what each user can do."
         actions={
@@ -492,19 +493,19 @@ export default function AdminPage() {
 
       {tab === 'roles' && (
         <div className="space-y-4">
-          <section className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
+          <section className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/70">
             <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-canvas text-[11px] uppercase tracking-wide text-slate-500">
+              <thead className="sticky top-0 z-10 bg-slate-50/95 text-[11px] font-semibold uppercase tracking-wider text-slate-500 backdrop-blur">
                 <tr>
-                  <th className="px-4 py-2.5 font-medium">Role</th>
-                  <th className="px-4 py-2.5 font-medium">Permissions</th>
-                  <th className="px-4 py-2.5 text-right font-medium">Actions</th>
+                  <th className="px-4 py-3">Role</th>
+                  <th className="px-4 py-3">Permissions</th>
+                  <th className="px-4 py-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100/80">
                 {roles.map((role) => (
-                  <tr key={role._id} className="hover:bg-slate-50">
+                  <tr key={role._id} className="transition-colors duration-150 hover:bg-brand-50/60">
                     <td className="px-4 py-3">
                       <span className="block font-medium text-ink-900">
                         {role.key}

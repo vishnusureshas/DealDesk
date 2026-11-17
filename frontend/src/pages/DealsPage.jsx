@@ -10,6 +10,7 @@ import {
   LoadMore,
   Modal,
   PageHeader,
+  Skeleton,
   Spinner,
   Tabs,
 } from '../components/ui';
@@ -47,6 +48,7 @@ export default function DealsPage() {
   return (
     <div className="space-y-4">
       <PageHeader
+        eyebrow="Sales pipeline"
         title="Deals"
         description={`${items.length} loaded · Every deal you can see under your role's scope.`}
         actions={
@@ -63,11 +65,18 @@ export default function DealsPage() {
 
       <Tabs items={STATUS_TABS} value={status} onChange={setStatus} label="Deal status" />
 
-      <section className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
+      <section className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/70">
         {loading && items.length === 0 && (
-          <div className="flex items-center justify-center gap-2 py-16 text-sm text-slate-500">
-            <Spinner className="h-4 w-4 text-brand-500" />
-            Loading deals
+          <div className="divide-y divide-slate-100">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-4 px-4 py-3.5">
+                <Skeleton className="h-4 w-48" />
+                <Skeleton className="h-5 w-20 rounded-full" />
+                <Skeleton className="ml-auto h-4 w-12" />
+                <Skeleton className="h-4 w-16" />
+                <Skeleton className="h-3 w-24" />
+              </div>
+            ))}
           </div>
         )}
 
@@ -109,26 +118,26 @@ export default function DealsPage() {
           <>
             <div className="overflow-x-auto">
             <table className="hidden w-full text-left text-sm sm:table">
-              <thead className="bg-canvas text-[11px] uppercase tracking-wide text-slate-500">
+              <thead className="sticky top-0 z-10 bg-slate-50/95 text-[11px] font-semibold uppercase tracking-wider text-slate-500 backdrop-blur">
                 <tr>
-                  <th className="px-4 py-2.5 font-medium">Title</th>
-                  <th className="px-4 py-2.5 font-medium">Status</th>
-                  <th className="px-4 py-2.5 text-right font-medium">Discount</th>
-                  <th className="px-4 py-2.5 text-right font-medium">Total</th>
-                  <th className="px-4 py-2.5 text-right font-medium">Created</th>
+                  <th className="px-4 py-3">Title</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3 text-right">Discount</th>
+                  <th className="px-4 py-3 text-right">Total</th>
+                  <th className="px-4 py-3 text-right">Created</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100/80">
                 {items.map((deal) => (
                   <tr
                     key={deal._id}
                     onClick={() => navigate(`/deals/${deal._id}`)}
-                    className="cursor-pointer transition-colors hover:bg-slate-50"
+                    className="cursor-pointer transition-colors duration-150 hover:bg-brand-50/60"
                   >
-                    <td className="max-w-[22rem] px-4 py-3">
+                    <td className="max-w-[22rem] px-4 py-3.5">
                       <Link
                         to={`/deals/${deal._id}`}
-                        className="focus-ring block truncate font-medium text-ink-900 hover:text-brand-700"
+                        className="focus-ring block truncate font-semibold text-ink-900 hover:text-brand-700"
                       >
                         {deal.title}
                       </Link>

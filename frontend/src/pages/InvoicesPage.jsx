@@ -12,6 +12,7 @@ import {
   LoadMore,
   PageHeader,
   Select,
+  Skeleton,
   Spinner,
 } from '../components/ui';
 import { usePaginatedList } from '../hooks/usePaginatedList';
@@ -85,6 +86,7 @@ export default function InvoicesPage() {
   return (
     <div className="space-y-4">
       <PageHeader
+        eyebrow="Billing"
         title="Invoices"
         description="Invoice status from BillPort and the outbound push state are independent."
       />
@@ -138,11 +140,20 @@ export default function InvoicesPage() {
         )}
       </div>
 
-      <section className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
+      <section className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/70">
         {loading && items.length === 0 && (
-          <div className="flex items-center justify-center gap-2 py-16 text-sm text-slate-500">
-            <Spinner className="h-4 w-4 text-brand-500" />
-            Loading invoices
+          <div className="divide-y divide-slate-100">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-4 px-4 py-3.5">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-28" />
+                <Skeleton className="ml-auto h-4 w-16" />
+                <Skeleton className="h-5 w-16 rounded-full" />
+                <Skeleton className="h-5 w-16 rounded-full" />
+                <Skeleton className="h-4 w-8" />
+                <Skeleton className="h-3 w-28" />
+              </div>
+            ))}
           </div>
         )}
 
@@ -172,23 +183,23 @@ export default function InvoicesPage() {
           <>
             <div className="overflow-x-auto">
             <table className="hidden w-full text-left text-sm sm:table">
-              <thead className="bg-canvas text-[11px] uppercase tracking-wide text-slate-500">
+              <thead className="sticky top-0 z-10 bg-slate-50/95 text-[11px] font-semibold uppercase tracking-wider text-slate-500 backdrop-blur">
                 <tr>
-                  <th className="px-4 py-2.5 font-medium">Invoice</th>
-                  <th className="px-4 py-2.5 font-medium">Deal</th>
-                  <th className="px-4 py-2.5 text-right font-medium">Amount</th>
-                  <th className="px-4 py-2.5 font-medium">Status</th>
-                  <th className="px-4 py-2.5 font-medium">Push</th>
-                  <th className="px-4 py-2.5 text-right font-medium">Attempts</th>
-                  <th className="px-4 py-2.5 text-right font-medium">Last synced</th>
+                  <th className="px-4 py-3">Invoice</th>
+                  <th className="px-4 py-3">Deal</th>
+                  <th className="px-4 py-3 text-right">Amount</th>
+                  <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3">Push</th>
+                  <th className="px-4 py-3 text-right">Attempts</th>
+                  <th className="px-4 py-3 text-right">Last synced</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100/80">
                 {items.map((invoice) => (
                   <tr
                     key={invoice._id}
                     onClick={() => navigate(`/invoices/${invoice._id}`)}
-                    className="cursor-pointer transition-colors hover:bg-slate-50"
+                    className="cursor-pointer transition-colors duration-150 hover:bg-brand-50/60"
                   >
                     <td className="px-4 py-3">
                       <Link

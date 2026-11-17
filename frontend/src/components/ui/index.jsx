@@ -341,19 +341,39 @@ export function Textarea({ className = '', invalid = false, ...props }) {
   );
 }
 
-export function PageHeader({ title, description, actions }) {
+export function PageHeader({ title, description, actions, eyebrow }) {
   useDocumentTitle(title);
 
   return (
-    <header className="flex flex-wrap items-start justify-between gap-3">
-      <div>
-        <h1 className="text-xl font-semibold text-ink-900">{title}</h1>
+    <header className="flex flex-wrap items-start justify-between gap-4">
+      <div className="min-w-0">
+        {eyebrow && (
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-600">
+            {eyebrow}
+          </p>
+        )}
+        <h1 className="mt-0.5 text-2xl font-semibold tracking-tight text-ink-900">
+          {title}
+        </h1>
         {description && (
-          <p className="mt-1 text-sm text-slate-600">{description}</p>
+          <p className="mt-1 max-w-2xl text-sm leading-relaxed text-slate-500">
+            {description}
+          </p>
         )}
       </div>
-      {actions && <div className="flex items-center gap-2">{actions}</div>}
+      {actions && (
+        <div className="flex items-center gap-2">{actions}</div>
+      )}
     </header>
+  );
+}
+
+export function Skeleton({ className = 'h-4 w-full' }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`inline-block animate-pulse rounded-md bg-slate-200/80 ${className}`}
+    />
   );
 }
 

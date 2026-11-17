@@ -59,16 +59,19 @@ export default function ChatPage() {
         description="One thread per deal. Messages are live when the socket is connected and fall back to REST when it is not."
       />
 
-      <div className="grid h-[calc(100vh-14rem)] min-h-[26rem] overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 md:grid-cols-[18rem_minmax(0,1fr)]">
+      <div className="grid h-[calc(100vh-14rem)] min-h-[26rem] overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/70 md:grid-cols-[19rem_minmax(0,1fr)]">
         <aside
           className={`${
             dealId ? 'hidden md:flex' : 'flex'
           } min-h-0 flex-col border-r border-slate-200`}
         >
-          <header className="border-b border-slate-100 px-3 py-2.5">
-            <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <header className="flex items-center justify-between border-b border-slate-100 bg-slate-50/60 px-4 py-3">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500">
               Conversations
             </h2>
+            <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-medium text-slate-500 ring-1 ring-slate-200">
+              {threads.length}
+            </span>
           </header>
 
           <div className="min-h-0 flex-1 overflow-y-auto">
@@ -111,8 +114,10 @@ export default function ChatPage() {
                     <button
                       type="button"
                       onClick={() => navigate(`/chat/${item.dealId}`)}
-                      className={`focus-ring flex w-full flex-col gap-1 border-b border-slate-100 px-3 py-2.5 text-left transition-colors ${
-                        active ? 'bg-brand-50/70' : 'hover:bg-slate-50'
+                      className={`focus-ring flex w-full flex-col gap-1 border-b border-slate-100 px-4 py-3 text-left transition-all duration-150 ${
+                        active
+                          ? 'bg-brand-50/80 shadow-[inset_3px_0_0_0_#3b6cf6]'
+                          : 'hover:bg-slate-50/80'
                       }`}
                     >
                       <span className="flex items-center justify-between gap-2">
