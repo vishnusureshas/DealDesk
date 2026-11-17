@@ -80,7 +80,7 @@ jobs:
           VITE_BILLPORT_URL: ${{ vars.VITE_BILLPORT_URL || 'https://dealdesk-billport-78wi.onrender.com' }}
 
   deploy:
-    name: Deploy (Render + verify)
+    name: Deploy (Render + Vercel + verify)
     needs: [backend, frontend]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
@@ -97,10 +97,16 @@ jobs:
         env:
           RENDER_DEPLOY_HOOK_BILLPORT: ${{ secrets.RENDER_DEPLOY_HOOK_BILLPORT }}
 
-      - name: Wait for Render to redeploy
-        run: sleep 90
+      - name: Trigger Vercel deploy (frontend)
+        if: ${{ secrets.VERCEL_DEPLOY_HOOK != '' }}
+        run: curl -fsS -X POST "$VERCEL_DEPLOY_HOOK"
+        env:
+          VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
 
-      - name: Verify health endpoints
+      - name: Wait for deploys to finish
+        run: sleep 120
+
+      - name: Verify backend health endpoints
         run: |
           set -e
           curl -fsS https://dealdesk-api-ys6i.onrender.com/health
@@ -109,3 +115,13 @@ jobs:
           echo
           curl -fsS https://dealdesk-api-ys6i.onrender.com/health/seed
           echo
+
+      - name: Verify frontend (Vercel)
+        run: |
+          set -e
+          code=$(curl -s -o /dev/null -w "%{http_code}" https://deal-desk-blond-psi.vercel.app/)
+          echo "root -> $code"; test "$code" = "200"
+          code=$(curl -s -o /dev/null -w "%{http_code}" https://deal-desk-blond-psi.vercel.app/login)
+          echo "/login -> $code"; test "$code" = "200"
+          code=$(curl -s -o /dev/null -w "%{http_code}" https://deal-desk-blond-psi.vercel.app/deals)
+          echo "/deals -> $code"; test "$code" = "200"
