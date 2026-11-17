@@ -75,7 +75,7 @@ export default function LoginPage() {
       await login(email, password);
       setSubmitting(false);
       setShowLoading(true);
-      window.setTimeout(() => navigate(from, { replace: true }), 900);
+      window.setTimeout(() => navigate(from, { replace: true }), 1500);
       return;
     } catch (loginError) {
       setError(
