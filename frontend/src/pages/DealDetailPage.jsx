@@ -405,27 +405,27 @@ export default function DealDetailPage() {
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="space-y-4">
-          <section className="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
+          <section className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/70">
             <header className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
-              <h2 className="text-sm font-medium text-ink-900">Items</h2>
+              <h2 className="text-sm font-semibold text-ink-900">Items</h2>
             </header>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
-                <thead className="bg-canvas text-[11px] uppercase tracking-wide text-slate-500">
+                <thead className="sticky top-0 z-10 bg-slate-50/95 text-[11px] font-semibold uppercase tracking-wider text-slate-500 backdrop-blur">
                   <tr>
-                    <th className="px-4 py-2 font-medium">Product</th>
-                    <th className="px-4 py-2 text-right font-medium">Qty</th>
-                    <th className="px-4 py-2 text-right font-medium">Unit</th>
-                    <th className="px-4 py-2 text-right font-medium">Line total</th>
+                    <th className="px-4 py-3">Product</th>
+                    <th className="px-4 py-3 text-right">Qty</th>
+                    <th className="px-4 py-3 text-right">Unit</th>
+                    <th className="px-4 py-3 text-right">Line total</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-slate-100/80">
                   {deal.items.map((item) => {
                     const product = productsById.get(String(item.productId));
 
                     return (
-                      <tr key={String(item.productId)}>
+                      <tr key={String(item.productId)} className="transition-colors duration-150 hover:bg-brand-50/60">
                         <td className="px-4 py-2.5">
                           <span className="block font-medium text-slate-700">
                             {product?.name ?? shortId(item.productId)}
