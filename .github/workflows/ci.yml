@@ -1,0 +1,111 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (tests + build)
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:7
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: |
+          npx tsc -p dealdesk/tsconfig.json --noEmit
+          npx tsc -p billport/tsconfig.json --noEmit
+
+      - name: Test
+        run: npm test
+        env:
+          NODE_ENV: test
+
+      - name: Build
+        run: npm run build
+
+  frontend:
+    name: Frontend (tests + build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL || 'https://dealdesk-api-ys6i.onrender.com' }}
+          VITE_BILLPORT_URL: ${{ vars.VITE_BILLPORT_URL || 'https://dealdesk-billport-78wi.onrender.com' }}
+
+  deploy:
+    name: Deploy (Render + verify)
+    needs: [backend, frontend]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy (dealdesk)
+        if: ${{ secrets.RENDER_DEPLOY_HOOK_DEALDESK != '' }}
+        run: curl -fsS -X POST "$RENDER_DEPLOY_HOOK_DEALDESK"
+        env:
+          RENDER_DEPLOY_HOOK_DEALDESK: ${{ secrets.RENDER_DEPLOY_HOOK_DEALDESK }}
+
+      - name: Trigger Render deploy (billport)
+        if: ${{ secrets.RENDER_DEPLOY_HOOK_BILLPORT != '' }}
+        run: curl -fsS -X POST "$RENDER_DEPLOY_HOOK_BILLPORT"
+        env:
+          RENDER_DEPLOY_HOOK_BILLPORT: ${{ secrets.RENDER_DEPLOY_HOOK_BILLPORT }}
+
+      - name: Wait for Render to redeploy
+        run: sleep 90
+
+      - name: Verify health endpoints
+        run: |
+          set -e
+          curl -fsS https://dealdesk-api-ys6i.onrender.com/health
+          echo
+          curl -fsS https://dealdesk-billport-78wi.onrender.com/health
+          echo
+          curl -fsS https://dealdesk-api-ys6i.onrender.com/health/seed
+          echo
