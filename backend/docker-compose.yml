@@ -1,0 +1,71 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: dealdesk-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  dealdesk:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE: dealdesk
+    container_name: dealdesk-api
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - "4000:4000"
+    environment:
+      NODE_ENV: development
+      PORT: 4000
+      MONGO_URI: mongodb://mongo:27017/dealdesk
+      JWT_SECRET: ${JWT_SECRET:-change-me}
+      JWT_EXPIRES_IN: 8h
+      BILLPORT_URL: http://billport:5000
+      BILLPORT_SHARED_SECRET: ${BILLPORT_SHARED_SECRET:-change-me}
+      PUSH_TIMEOUT_MS: 3000
+      PUSH_BASE_DELAY_MS: 2000
+      PUSH_MAX_DELAY_MS: 60000
+      PUSH_MAX_ATTEMPTS: 10
+      WORKER_POLL_MS: 2000
+      RECON_STALE_MINUTES: 1
+      RECON_INTERVAL_SECONDS: 15
+      CORS_ORIGIN: "*"
+
+  billport:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE: billport
+    container_name: billport-api
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - "5000:5000"
+    environment:
+      NODE_ENV: development
+      PORT: 5000
+      MONGO_URI: mongodb://mongo:27017/billport
+      BILLPORT_SHARED_SECRET: ${BILLPORT_SHARED_SECRET:-change-me}
+      DEALDESK_WEBHOOK_URL: http://dealdesk:4000/webhooks/billport
+      FAIL_RATE: 0.15
+      SLOW_RATE: 0.10
+      DUP_RATE: 0.20
+      BAD_SIG_RATE: 0.10
+      EVENT_MIN_DELAY_SECONDS: 5
+      EVENT_MAX_DELAY_SECONDS: 30
+
+volumes:
+  mongo-data:

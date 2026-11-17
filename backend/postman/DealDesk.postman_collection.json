@@ -1,0 +1,2126 @@
+{
+  "info": {
+    "name": "DealDesk",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "DealDesk API collection. Run the re-runnable seed first so demo ids exist."
+  },
+  "variable": [
+    {
+      "key": "dealdeskUrl",
+      "value": "http://localhost:4000"
+    },
+    {
+      "key": "billportUrl",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "billportSharedSecret",
+      "value": "change-me"
+    },
+    {
+      "key": "password",
+      "value": "Password123!"
+    },
+    {
+      "key": "customerId",
+      "value": "64a1c0000000000000000001"
+    },
+    {
+      "key": "productId",
+      "value": "64a1c0000000000000000002"
+    },
+    {
+      "key": "externalId",
+      "value": "ext_demo"
+    },
+    {
+      "key": "eventId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth and Users",
+      "item": [
+        {
+          "name": "Login execA",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/auth/login",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"execA@dealdesk.test\",\"password\":\"{{password}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set(\"execA_token\", pm.response.json().token);",
+                  "pm.collectionVariables.set(\"execA_userId\", pm.response.json().user.id);",
+                  "pm.collectionVariables.set(\"execA_branchId\", pm.response.json().user.branchId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login execB",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/auth/login",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"execB@dealdesk.test\",\"password\":\"{{password}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set(\"execB_token\", pm.response.json().token);",
+                  "pm.collectionVariables.set(\"execB_userId\", pm.response.json().user.id);",
+                  "pm.collectionVariables.set(\"execB_branchId\", pm.response.json().user.branchId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login managerA",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/auth/login",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"managerA@dealdesk.test\",\"password\":\"{{password}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set(\"managerA_token\", pm.response.json().token);",
+                  "pm.collectionVariables.set(\"managerA_userId\", pm.response.json().user.id);",
+                  "pm.collectionVariables.set(\"managerA_branchId\", pm.response.json().user.branchId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login managerB",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/auth/login",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"managerB@dealdesk.test\",\"password\":\"{{password}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set(\"managerB_token\", pm.response.json().token);",
+                  "pm.collectionVariables.set(\"managerB_userId\", pm.response.json().user.id);",
+                  "pm.collectionVariables.set(\"managerB_branchId\", pm.response.json().user.branchId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login finance",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/auth/login",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"finance@dealdesk.test\",\"password\":\"{{password}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set(\"finance_token\", pm.response.json().token);",
+                  "pm.collectionVariables.set(\"finance_userId\", pm.response.json().user.id);",
+                  "pm.collectionVariables.set(\"finance_branchId\", pm.response.json().user.branchId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/auth/login",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"admin@dealdesk.test\",\"password\":\"{{password}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set(\"admin_token\", pm.response.json().token);",
+                  "pm.collectionVariables.set(\"admin_userId\", pm.response.json().user.id);",
+                  "pm.collectionVariables.set(\"admin_branchId\", pm.response.json().user.branchId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get me",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{execA_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/auth/me",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set(\"execA_me\", JSON.stringify(pm.response.json().user));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List permissions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/permissions",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "permissions"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"seven permission keys\", () => pm.expect(pm.response.json().items).to.have.lengthOf(7));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List roles",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/roles",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "roles"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "const roles = pm.response.json().items;\nfor (const role of roles) {\n  pm.collectionVariables.set(role.key + \"_roleId\", role._id);\n}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/roles",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "roles"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"key\":\"sales_director-{{$guid}}\",\"name\":\"Sales Director\",\"permissions\":[{\"key\":\"deal.view\",\"scope\":\"all\"},{\"key\":\"discount.approve\",\"scope\":\"all\"},{\"key\":\"chat.send\",\"scope\":\"all\"}]}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"createdRoleId\", pm.response.json()._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update role",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/roles/{{createdRoleId}}",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "roles",
+                "{{createdRoleId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"Renamed Sales Director\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create user",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/users",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\":\"new-{{$guid}}@dealdesk.test\",\"password\":\"{{password}}\",\"roleId\":\"{{sales_exec_roleId}}\",\"branchId\":\"{{admin_branchId}}\",\"managerId\":\"{{managerA_userId}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"createdUserId\", pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Get approval config",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/approval-config",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "approval-config"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Set default approval config",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/approval-config",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "approval-config"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"bands\":[{\"minPct\":0,\"maxPct\":10,\"chain\":[]},{\"minPct\":10,\"maxPct\":25,\"chain\":[\"sales_manager\"]},{\"minPct\":25,\"maxPct\":40,\"chain\":[\"sales_manager\",\"finance\"]},{\"minPct\":40,\"maxPct\":100,\"chain\":[\"sales_manager\",\"finance\",\"admin\"]}]}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Add admin as third step for 25-40%",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/approval-config",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "approval-config"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"bands\":[{\"minPct\":0,\"maxPct\":10,\"chain\":[]},{\"minPct\":10,\"maxPct\":25,\"chain\":[\"sales_manager\"]},{\"minPct\":25,\"maxPct\":40,\"chain\":[\"sales_manager\",\"finance\",\"admin\"]},{\"minPct\":40,\"maxPct\":100,\"chain\":[\"sales_manager\",\"finance\",\"admin\"]}]}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Restore default approval config",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/approval-config",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "approval-config"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"bands\":[{\"minPct\":0,\"maxPct\":10,\"chain\":[]},{\"minPct\":10,\"maxPct\":25,\"chain\":[\"sales_manager\"]},{\"minPct\":25,\"maxPct\":40,\"chain\":[\"sales_manager\",\"finance\"]},{\"minPct\":40,\"maxPct\":100,\"chain\":[\"sales_manager\",\"finance\",\"admin\"]}]}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Deals",
+      "item": [
+        {
+          "name": "List deals",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{finance_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/deals",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "deals"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create deal A",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{execA_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/deals",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "deals"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"Deal A from Postman\",\"customerId\":\"{{customerId}}\",\"items\":[{\"productId\":\"{{productId}}\",\"qty\":2}]}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"dealAId\", pm.response.json()._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create deal B",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{execB_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/deals",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "deals"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"Deal B from Postman\",\"customerId\":\"{{customerId}}\",\"items\":[{\"productId\":\"{{productId}}\",\"qty\":2}]}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"dealBId\", pm.response.json()._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cross-branch leak check execA gets deal B",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{execA_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/deals/{{dealBId}}",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "deals",
+                "{{dealBId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Finance can read deal B",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{finance_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/deals/{{dealBId}}",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "deals",
+                "{{dealBId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get deal A",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{execA_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/deals/{{dealAId}}",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "deals",
+                "{{dealAId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Patch deal A",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{execA_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/deals/{{dealAId}}",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "deals",
+                "{{dealAId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"Deal A updated from Postman\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Request 30% discount on deal A",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{execA_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/deals/{{dealAId}}/discount-requests",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "deals",
+                "{{dealAId}}",
+                "discount-requests"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"pct\":30}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"approvalRequestId\", pm.response.json()._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Finance decides before manager (expect 409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{finance_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/approvals/{{approvalRequestId}}/decide",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "approvals",
+                "{{approvalRequestId}}",
+                "decide"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"action\":\"approve\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 409\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Manager approves",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{managerA_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/approvals/{{approvalRequestId}}/decide",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "approvals",
+                "{{approvalRequestId}}",
+                "decide"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"action\":\"approve\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Finance approves",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{finance_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/approvals/{{approvalRequestId}}/decide",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "approvals",
+                "{{approvalRequestId}}",
+                "decide"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"action\":\"approve\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Deal A should be won",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{execA_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/deals/{{dealAId}}",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "deals",
+                "{{dealAId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"deal is won\", () => pm.expect(pm.response.json().status).to.eql(\"won\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Convert deal A to invoice",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{finance_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/deals/{{dealAId}}/convert",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "deals",
+                "{{dealAId}}",
+                "convert"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set(\"invoiceId\", pm.response.json().invoice._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Convert deal A again (same invoice)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{finance_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/deals/{{dealAId}}/convert",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "deals",
+                "{{dealAId}}",
+                "convert"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"same invoice id\", () => pm.expect(pm.response.json().invoice._id).to.eql(pm.collectionVariables.get(\"invoiceId\")));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Approvals",
+      "item": [
+        {
+          "name": "Pending approvals for managerA",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{managerA_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/approvals/pending",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "approvals",
+                "pending"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Pending approvals for finance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{finance_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/approvals/pending",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "approvals",
+                "pending"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get approval request",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{execA_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/approvals/{{approvalRequestId}}",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "approvals",
+                "{{approvalRequestId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Invoices",
+      "item": [
+        {
+          "name": "List invoices",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{finance_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/invoices",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "invoices"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get invoice",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{finance_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/invoices/{{invoiceId}}",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "invoices",
+                "{{invoiceId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get invoice log",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{finance_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/invoices/{{invoiceId}}/log",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "invoices",
+                "{{invoiceId}}",
+                "log"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Retry invoice push",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{finance_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/invoices/{{invoiceId}}/retry",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "invoices",
+                "{{invoiceId}}",
+                "retry"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": []
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cancel invoice",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{finance_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/invoices/{{invoiceId}}/cancel",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "invoices",
+                "{{invoiceId}}",
+                "cancel"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Webhook",
+      "item": [
+        {
+          "name": "Send signed webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Signature",
+                "value": "{{webhookSignature}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/webhooks/billport",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "webhooks",
+                "billport"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{{webhookRawBody}}"
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const Crypto = require('crypto-js');\nconst eventId = pm.variables.replaceIn(\"{{$guid}}\");\nconst externalId = pm.collectionVariables.get(\"externalId\") || \"ext_demo\";\nconst rawBody = JSON.stringify({\n  eventId,\n  externalId,\n  status: \"PAID\",\n  sequence: 1,\n  occurredAt: new Date().toISOString()\n});\npm.collectionVariables.set(\"eventId\", eventId);\npm.collectionVariables.set(\"externalId\", externalId);\npm.variables.set(\"webhookRawBody\", rawBody);\npm.variables.set(\n  \"webhookSignature\",\n  Crypto.HmacSHA256(rawBody, pm.variables.get(\"billportSharedSecret\")).toString()\n);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"received\", () => pm.expect(pm.response.json().received).to.be.true);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Send tampered webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Signature",
+                "value": "{{tamperedSignature}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/webhooks/billport",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "webhooks",
+                "billport"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{{tamperedRawBody}}"
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const Crypto = require('crypto-js');\nconst eventId = pm.variables.replaceIn(\"{{$guid}}\");\nconst externalId = pm.collectionVariables.get(\"externalId\") || \"ext_demo\";\nconst rawBody = JSON.stringify({\n  eventId,\n  externalId,\n  status: \"PAID\",\n  sequence: 1,\n  occurredAt: new Date().toISOString()\n});\nconst signature = Crypto.HmacSHA256(rawBody, pm.variables.get(\"billportSharedSecret\")).toString();\nconst tamperedSignature = signature.endsWith(\"0\")\n  ? signature.slice(0, -1) + \"1\"\n  : signature.slice(0, -1) + \"0\";\npm.variables.set(\"tamperedRawBody\", rawBody);\npm.variables.set(\"tamperedSignature\", tamperedSignature);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Chat",
+      "item": [
+        {
+          "name": "List threads",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{execA_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/threads",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "threads"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "const items = pm.response.json().items;\nif (items.length > 0) {\n  pm.collectionVariables.set(\"threadId\", items[0].threadId);\n  pm.collectionVariables.set(\"chatDealId\", items[0].dealId);\n}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List thread messages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{execA_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/threads/{{threadId}}/messages",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "threads",
+                "{{threadId}}",
+                "messages"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Send thread message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{execA_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/threads/{{threadId}}/messages",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "threads",
+                "{{threadId}}",
+                "messages"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"body\":\"Message from Postman\",\"clientId\":\"{{$guid}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 201\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"sentMessageId\", pm.response.json().message._id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mark thread read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{execA_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/threads/{{threadId}}/read",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "threads",
+                "{{threadId}}",
+                "read"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "List notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{finance_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/notifications",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "notifications"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));",
+                  "const items = pm.response.json().items;\nif (items.length > 0) {\n  pm.collectionVariables.set(\"notificationId\", items[0]._id);\n}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mark notification read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{finance_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{dealdeskUrl}}/notifications/{{notificationId}}/read",
+              "host": [
+                "{{dealdeskUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "{{notificationId}}",
+                "read"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"status 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "BillPort",
+      "item": [
+        {
+          "name": "Push invoice to BillPort",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{$guid}}"
+              },
+              {
+                "key": "X-Signature",
+                "value": "{{billportSignature}}"
+              }
+            ],
+            "url": {
+              "raw": "{{billportUrl}}/billing/invoices",
+              "host": [
+                "{{billportUrl}}"
+              ],
+              "path": [
+                "billing",
+                "invoices"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{{billportRawBody}}"
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const Crypto = require('crypto-js');\nconst reference = pm.variables.replaceIn(\"{{$guid}}\");\nconst rawBody = JSON.stringify({\n  reference,\n  customer: { id: pm.collectionVariables.get(\"customerId\"), name: \"Acme Corp\" },\n  amount: 18000,\n  currency: \"USD\",\n  lineItems: [],\n  issuedAt: new Date().toISOString()\n});\npm.variables.set(\"billportRawBody\", rawBody);\npm.variables.set(\n  \"billportSignature\",\n  Crypto.HmacSHA256(rawBody, pm.variables.get(\"billportSharedSecret\")).toString()\n);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();\nif (body.externalId) {\n  pm.collectionVariables.set(\"externalId\", body.externalId);\n}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get BillPort invoice status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{billportUrl}}/billing/invoices/{{externalId}}",
+              "host": [
+                "{{billportUrl}}"
+              ],
+              "path": [
+                "billing",
+                "invoices",
+                "{{externalId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": []
+              }
+            }
+          ]
+        },
+        {
+          "name": "Pause BillPort webhooks",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{billportUrl}}/debug/pause",
+              "host": [
+                "{{billportUrl}}"
+              ],
+              "path": [
+                "debug",
+                "pause"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": []
+              }
+            }
+          ]
+        },
+        {
+          "name": "Resume BillPort webhooks",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{billportUrl}}/debug/resume",
+              "host": [
+                "{{billportUrl}}"
+              ],
+              "path": [
+                "debug",
+                "resume"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": []
+              }
+            }
+          ]
+        },
+        {
+          "name": "Send BillPort webhook now",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{billportUrl}}/debug/send",
+              "host": [
+                "{{billportUrl}}"
+              ],
+              "path": [
+                "debug",
+                "send"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"externalId\":\"{{externalId}}\",\"status\":\"PAID\",\"sequence\":1}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": []
+              }
+            }
+          ]
+        },
+        {
+          "name": "Replay BillPort webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{billportUrl}}/debug/replay",
+              "host": [
+                "{{billportUrl}}"
+              ],
+              "path": [
+                "debug",
+                "replay"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"externalId\":\"{{externalId}}\",\"eventId\":\"{{eventId}}\"}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": []
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get BillPort debug state",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{billportUrl}}/debug/state/{{externalId}}",
+              "host": [
+                "{{billportUrl}}"
+              ],
+              "path": [
+                "debug",
+                "state",
+                "{{externalId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": []
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

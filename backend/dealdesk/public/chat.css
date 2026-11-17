@@ -1,0 +1,289 @@
+:root {
+  color-scheme: light;
+  --border: #d7dce2;
+  --muted: #667085;
+  --accent: #1f6feb;
+  --accent-soft: #e8f0fe;
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --danger: #b42318;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: #1d2433;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  padding: 0.45rem 0.75rem;
+}
+
+button:hover {
+  border-color: var(--accent);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 1.2rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.status {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+main {
+  padding: 1rem;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.login-panel {
+  max-width: 420px;
+  margin: 3rem auto;
+}
+
+.login-panel h2 {
+  margin-top: 0;
+}
+
+.login-panel form {
+  display: grid;
+  gap: 0.8rem;
+}
+
+label {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+}
+
+input,
+textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.55rem 0.65rem;
+  background: var(--surface);
+}
+
+.demo-logins {
+  margin-top: 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.demo-logins p {
+  flex-basis: 100%;
+  margin: 0 0 0.2rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.chat-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) minmax(320px, 1fr) minmax(220px, 300px);
+  gap: 1rem;
+  height: calc(100vh - 5.2rem);
+}
+
+.sidebar,
+.chat,
+.notifications {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.sidebar-header,
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.7rem;
+}
+
+.chat-header h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.thread-list,
+.notification-list {
+  overflow-y: auto;
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+}
+
+.thread {
+  text-align: left;
+  width: 100%;
+  padding: 0.65rem;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.thread.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.thread-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.thread-preview {
+  color: var(--muted);
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.unread-badge {
+  min-width: 1.4rem;
+  text-align: center;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 0.1rem 0.35rem;
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-right: 0.2rem;
+}
+
+.message {
+  max-width: 80%;
+  padding: 0.55rem 0.7rem;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+
+.message.mine {
+  align-self: flex-end;
+  background: var(--accent-soft);
+  border-color: #b6cdf8;
+}
+
+.message-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+  margin-bottom: 0.2rem;
+}
+
+.message-body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.message-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+  align-items: end;
+}
+
+.notification {
+  text-align: left;
+  width: 100%;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.notification.unread {
+  border-color: var(--accent);
+}
+
+.notification-title {
+  font-weight: 600;
+}
+
+.notification-meta {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.error {
+  color: var(--danger);
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .chat-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .sidebar,
+  .chat,
+  .notifications {
+    min-height: 240px;
+  }
+
+  .messages {
+    min-height: 300px;
+  }
+}

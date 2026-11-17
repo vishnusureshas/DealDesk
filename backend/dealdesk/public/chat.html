@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DealDesk Chat</title>
+    <link rel="stylesheet" href="/chat.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>DealDesk Chat</h1>
+      <div id="status" class="status">Not connected</div>
+    </header>
+
+    <main>
+      <section id="loginPanel" class="panel login-panel">
+        <h2>Login</h2>
+        <form id="loginForm">
+          <label>
+            Email
+            <input id="email" type="email" autocomplete="username" required />
+          </label>
+          <label>
+            Password
+            <input
+              id="password"
+              type="password"
+              autocomplete="current-password"
+              required
+            />
+          </label>
+          <button type="submit">Sign in</button>
+        </form>
+        <div class="demo-logins">
+          <p>Demo logins (password <code>Password123!</code>)</p>
+          <button data-email="execA@dealdesk.test" type="button">execA</button>
+          <button data-email="execB@dealdesk.test" type="button">execB</button>
+          <button data-email="managerA@dealdesk.test" type="button">
+            managerA
+          </button>
+          <button data-email="finance@dealdesk.test" type="button">
+            finance
+          </button>
+          <button data-email="admin@dealdesk.test" type="button">admin</button>
+        </div>
+      </section>
+
+      <section id="chatPanel" class="chat-layout hidden">
+        <aside class="panel sidebar">
+          <div class="sidebar-header">
+            <div>
+              <strong id="currentUser"></strong>
+              <div class="muted">Threads</div>
+            </div>
+            <button id="logoutButton" type="button">Logout</button>
+          </div>
+          <div id="threadList" class="thread-list"></div>
+        </aside>
+
+        <section class="panel chat">
+          <div class="chat-header">
+            <h2 id="threadTitle">Select a thread</h2>
+            <button id="refreshButton" type="button">Refresh</button>
+          </div>
+          <div id="messages" class="messages">
+            <p class="muted">Choose a deal thread to load its history.</p>
+          </div>
+          <form id="messageForm" class="message-form">
+            <textarea
+              id="messageInput"
+              maxlength="2000"
+              rows="2"
+              placeholder="Write a message..."
+              disabled
+            ></textarea>
+            <button id="sendButton" type="submit" disabled>Send</button>
+          </form>
+        </section>
+
+        <aside class="panel notifications">
+          <div class="chat-header">
+            <h2>Notifications</h2>
+            <button id="refreshNotificationsButton" type="button">
+              Refresh
+            </button>
+          </div>
+          <div id="notificationList" class="notification-list"></div>
+        </aside>
+      </section>
+    </main>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/chat.js"></script>
+  </body>
+</html>

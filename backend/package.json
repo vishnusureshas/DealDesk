@@ -1,0 +1,32 @@
+{
+  "name": "dealdesk-assignment",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DealDesk backend assignment: DealDesk API and BillPort fake billing service",
+  "workspaces": [
+    "dealdesk",
+    "billport"
+  ],
+  "engines": {
+    "node": "^20.0.0 || ^22.0.0 || >=24.0.0"
+  },
+  "scripts": {
+    "dev:dealdesk": "npm --workspace dealdesk run dev",
+    "dev:billport": "npm --workspace billport run dev",
+    "build": "npm run build --workspaces",
+    "seed": "tsx seed/seed.ts",
+    "sync:indexes": "tsx scripts/sync-indexes.ts",
+    "test": "vitest run",
+    "demo:webhook:duplicate": "tsx scripts/webhook-duplicate.ts",
+    "demo:webhook:stale": "tsx scripts/webhook-stale.ts",
+    "demo:webhook:tamper": "tsx scripts/webhook-tamper.ts"
+  },
+  "devDependencies": {
+    "@types/supertest": "^6.0.2",
+    "socket.io-client": "^4.8.4",
+    "supertest": "^7.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vitest": "^4.1.12"
+  }
+}
