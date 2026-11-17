@@ -12,8 +12,8 @@ Render does not provide a managed MongoDB database. Both Render services connect
 
 | Component | Render type | Root directory | Build command | Start command | Health check |
 | --- | --- | --- | --- | --- | --- |
-| BillPort | Web Service | `backend` | `npm ci && npm run build --workspace billport` | `node billport/dist/server.js` | `/health` |
-| DealDesk | Web Service | `backend` | `npm ci && npm run build --workspace dealdesk` | `node dealdesk/dist/server.js` | `/health` |
+| BillPort | Web Service | `backend` | `npm ci --include=dev && npm run build --workspace billport` | `node billport/dist/server.js` | `/health` |
+| DealDesk | Web Service | `backend` | `npm ci --include=dev && npm run build --workspace dealdesk` | `node dealdesk/dist/server.js` | `/health` |
 | MongoDB | Atlas M0 or higher | n/a | n/a | n/a | n/a |
 
 Deploy BillPort first, then DealDesk, then connect their public URLs.
@@ -88,7 +88,7 @@ In Render:
 7. Set **Build Command** to:
 
 ```bash
-npm ci && npm run build --workspace billport
+npm ci --include=dev && npm run build --workspace billport
 ```
 
 8. Set **Start Command** to:
@@ -121,6 +121,7 @@ EVENT_MAX_DELAY_SECONDS=30
 Notes:
 
 - Do not set `PORT`. Render injects it automatically.
+- The build command uses `npm ci --include=dev`. `NODE_ENV=production` makes npm omit dev dependencies by default, which would remove the local TypeScript compiler and break the build.
 - `FAIL_RATE=0`, `SLOW_RATE=0`, `DUP_RATE=0`, and `BAD_SIG_RATE=0` make the deployment deterministic. Raise them if you want to demonstrate BillPort's controlled failures and retries.
 - `DEALDESK_WEBHOOK_URL` can be corrected after the DealDesk service is created.
 
@@ -139,7 +140,7 @@ In Render:
 7. Set **Build Command** to:
 
 ```bash
-npm ci && npm run build --workspace dealdesk
+npm ci --include=dev && npm run build --workspace dealdesk
 ```
 
 8. Set **Start Command** to:
@@ -176,6 +177,7 @@ CORS_ORIGIN=<frontend-origin>
 Notes:
 
 - Do not set `PORT`.
+- The build command uses `npm ci --include=dev` so the TypeScript compiler is installed even when `NODE_ENV=production`.
 - `BILLPORT_URL` must be the full HTTPS BillPort URL, with no trailing slash.
 - `CORS_ORIGIN` is used by both REST and Socket.IO.
 - `CORS_ORIGIN` accepts one origin or `*`. It does not accept a comma-separated list.
