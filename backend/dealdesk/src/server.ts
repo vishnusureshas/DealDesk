@@ -3,6 +3,7 @@ import { Server as SocketServer } from 'socket.io';
 import { createApp } from './app';
 import { connectDb } from './config/db';
 import { env } from './config/env';
+import { logger } from './utils/logger';
 import { startPushWorker } from './jobs/pushWorker';
 import { startReconciler } from './jobs/reconciler';
 import { RealtimeGateway } from './realtime/gateway';
@@ -26,7 +27,7 @@ async function start(): Promise<void> {
   startReconciler();
 
   server.listen(env.PORT, () => {
-    console.log(`[dealdesk] listening on http://localhost:${env.PORT}`);
+    logger.info(`listening on http://localhost:${env.PORT}`);
   });
 }
 

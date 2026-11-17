@@ -7,16 +7,8 @@ import morgan from 'morgan';
 import { env } from './config/env';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { User } from './models/User';
-import adminRoutes from './routes/admin.routes';
-import approvalRoutes from './routes/approvals.routes';
-import authRoutes from './routes/auth.routes';
-import catalogRoutes from './routes/catalog.routes';
-import dealRoutes from './routes/deals.routes';
-import invoiceRoutes from './routes/invoices.routes';
-import notificationRoutes from './routes/notifications.routes';
-import threadRoutes from './routes/threads.routes';
-import userRoutes from './routes/users.routes';
 import { asyncHandler } from './utils/asyncHandler';
+import { createRoutes } from './routes';
 import webhookRoutes from './routes/webhooks.routes';
 
 // Mirrors the demo accounts created by backend/seed/seed.ts.
@@ -82,15 +74,7 @@ export function createApp() {
     }),
   );
 
-  app.use('/auth', authRoutes);
-  app.use('/users', userRoutes);
-  app.use(catalogRoutes);
-  app.use('/deals', dealRoutes);
-  app.use('/approvals', approvalRoutes);
-  app.use('/invoices', invoiceRoutes);
-  app.use('/threads', threadRoutes);
-  app.use('/notifications', notificationRoutes);
-  app.use(adminRoutes);
+  app.use(createRoutes());
 
   app.use(notFoundHandler);
   app.use(errorHandler);
