@@ -74,8 +74,8 @@ free Render web services sleep. That is a cold start, not a deployment failure.
 
 | Setting | Value |
 | --- | --- |
-| Project Name | `dealdesk-web` (this becomes part of the URL) |
-| Framework Preset | `Vite` |
+| Project Name | `deal-desk` (Vercel appends a suffix if the name is taken; copy the URL it actually assigns) |
+| Framework Preset | `Vite` (this repo is Vite + React, not Next.js) |
 | Root Directory | `frontend` |
 | Build Command | `npm run build` |
 | Output Directory | `dist` |
@@ -141,14 +141,24 @@ Commit this file; it is part of the deployment and not a dashboard setting.
 
 1. Click **Deploy**.
 2. Wait for the build to finish. A clean build takes about a minute.
-3. Copy the production URL, for example:
+3. Copy the production URL that Vercel shows for **this** project, for example:
 
 ```text
-https://dealdesk-web.vercel.app
+https://deal-desk-blond-psi.vercel.app
 ```
+
+Do not assume `<project-name>.vercel.app` belongs to this project. If another
+Vercel project already owns that name, Vercel assigns a suffixed domain. The URL
+`https://dealdesk-web.vercel.app` belongs to a different Next.js project and
+will never serve this React/Vite app.
 
 4. Every push to the production branch (normally `main`) redeploys
    automatically. Pull requests get their own preview URLs.
+
+The CI/CD workflow verifies each deploy against the repository variables
+`FRONTEND_URL`, `DEALDESK_API_URL` and `BILLPORT_API_URL` under **Settings >
+Secrets and variables > Actions > Variables**. The defaults match the URLs
+above, so override them only when the deployment URL changes.
 
 ## 8. Point the Backend at the Frontend
 
@@ -159,7 +169,7 @@ the single value `CORS_ORIGIN`.
 2. Set `CORS_ORIGIN` to the exact Vercel production origin:
 
 ```text
-CORS_ORIGIN=https://dealdesk-web.vercel.app
+CORS_ORIGIN=https://deal-desk-blond-psi.vercel.app
 ```
 
 3. Save. Render restarts the service automatically.
@@ -167,14 +177,14 @@ CORS_ORIGIN=https://dealdesk-web.vercel.app
 
 Rules that cause most CORS failures here:
 
-- No trailing slash: `https://dealdesk-web.vercel.app`, never
-  `https://dealdesk-web.vercel.app/`.
+- No trailing slash: `https://deal-desk-blond-psi.vercel.app`, never
+  `https://deal-desk-blond-psi.vercel.app/`.
 - No comma-separated list. `CORS_ORIGIN` accepts one origin or `*`.
 - `http` and `https` are different origins.
 - A custom domain is a different origin; changing domains means changing
   `CORS_ORIGIN` again.
-- Preview deployments get URLs like
-  `https://dealdesk-web-git-branch-team.vercel.app`. Those are **different
+- Preview deployments get different URLs such as
+  `https://<project>-git-<branch>-<team>.vercel.app`. Those are **different
   origins** and will be blocked by a single-origin `CORS_ORIGIN`. For preview
   testing, either use `CORS_ORIGIN=*` temporarily or test previews against a
   backend configured for that origin.
@@ -206,7 +216,7 @@ problems:
 
 ```bash
 curl -s -i -X OPTIONS https://dealdesk-api-ys6i.onrender.com/auth/login \
-  -H 'Origin: https://dealdesk-web.vercel.app' \
+  -H 'Origin: https://deal-desk-blond-psi.vercel.app' \
   -H 'Access-Control-Request-Method: POST' \
   -H 'Access-Control-Request-Headers: content-type' \
   | grep -i '^access-control-allow-origin'

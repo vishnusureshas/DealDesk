@@ -78,8 +78,8 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          VITE_API_URL: ${{ vars.VITE_API_URL || 'https://dealdesk-api-ys6i.onrender.com' }}
-          VITE_BILLPORT_URL: ${{ vars.VITE_BILLPORT_URL || 'https://dealdesk-billport-78wi.onrender.com' }}
+          VITE_API_URL: ${{ vars.DEALDESK_API_URL || 'https://dealdesk-api-ys6i.onrender.com' }}
+          VITE_SOCKET_URL: ${{ vars.DEALDESK_API_URL || 'https://dealdesk-api-ys6i.onrender.com' }}
           VITE_GIT_SHA: ${{ github.sha }}
 
   deploy:
@@ -88,6 +88,10 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      FRONTEND_URL: ${{ vars.FRONTEND_URL || 'https://deal-desk-blond-psi.vercel.app' }}
+      DEALDESK_API_URL: ${{ vars.DEALDESK_API_URL || 'https://dealdesk-api-ys6i.onrender.com' }}
+      BILLPORT_API_URL: ${{ vars.BILLPORT_API_URL || 'https://dealdesk-billport-78wi.onrender.com' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -120,9 +124,9 @@ jobs:
           TARGET="${GITHUB_SHA:0:12}"
           echo "target commit: $TARGET"
           for i in $(seq 1 36); do
-            be_commit=$(curl -s https://dealdesk-api-ys6i.onrender.com/health | python3 -c "import sys,json; print((json.load(sys.stdin).get('commit') or '')[:12])" 2>/dev/null || echo "")
-            bp_commit=$(curl -s https://dealdesk-billport-78wi.onrender.com/health | python3 -c "import sys,json; print((json.load(sys.stdin).get('commit') or '')[:12])" 2>/dev/null || echo "")
-            fe_html=$(curl -s https://deal-desk-blond-psi.vercel.app/ || echo "")
+            be_commit=$(curl -s "$DEALDESK_API_URL/health" | python3 -c "import sys,json; print((json.load(sys.stdin).get('commit') or '')[:12])" 2>/dev/null || echo "")
+            bp_commit=$(curl -s "$BILLPORT_API_URL/health" | python3 -c "import sys,json; print((json.load(sys.stdin).get('commit') or '')[:12])" 2>/dev/null || echo "")
+            fe_html=$(curl -s "$FRONTEND_URL/" || echo "")
             fe_commit=$(echo "$fe_html" | grep -o 'name="app-commit" content="[^"]*"' | sed 's/.*content="//;s/"//' | cut -c1-12)
             echo "attempt $i: dealdesk=$be_commit billport=$bp_commit frontend=$fe_commit (target=$TARGET)"
             # Frontend (Vercel) rebuilds on every push -> must match exactly.
@@ -145,14 +149,14 @@ jobs:
         run: |
           set -e
           echo "== dealdesk /health =="
-          curl -fsS https://dealdesk-api-ys6i.onrender.com/health; echo
+          curl -fsS "$DEALDESK_API_URL/health"; echo
           echo "== dealdesk /health/seed =="
-          curl -fsS https://dealdesk-api-ys6i.onrender.com/health/seed; echo
+          curl -fsS "$DEALDESK_API_URL/health/seed"; echo
           echo "== billport /health =="
-          curl -fsS https://dealdesk-billport-78wi.onrender.com/health; echo
+          curl -fsS "$BILLPORT_API_URL/health"; echo
           # deployed backend commits must be at-or-before the pushed commit
-          be_commit=$(curl -s https://dealdesk-api-ys6i.onrender.com/health | python3 -c "import sys,json; print((json.load(sys.stdin).get('commit') or '')[:12])")
-          bp_commit=$(curl -s https://dealdesk-billport-78wi.onrender.com/health | python3 -c "import sys,json; print((json.load(sys.stdin).get('commit') or '')[:12])")
+          be_commit=$(curl -s "$DEALDESK_API_URL/health" | python3 -c "import sys,json; print((json.load(sys.stdin).get('commit') or '')[:12])")
+          bp_commit=$(curl -s "$BILLPORT_API_URL/health" | python3 -c "import sys,json; print((json.load(sys.stdin).get('commit') or '')[:12])")
           test -n "$be_commit" && git merge-base --is-ancestor "$be_commit" "$GITHUB_SHA"
           test -n "$bp_commit" && git merge-base --is-ancestor "$bp_commit" "$GITHUB_SHA"
           echo "backend commits ok: dealdesk=$be_commit billport=$bp_commit (target ${GITHUB_SHA:0:12})"
@@ -160,14 +164,14 @@ jobs:
       - name: Verify frontend (Vercel)
         run: |
           set -e
-          code=$(curl -s -o /dev/null -w "%{http_code}" https://deal-desk-blond-psi.vercel.app/)
+          code=$(curl -s -o /dev/null -w "%{http_code}" "$FRONTEND_URL/")
           echo "root -> $code"; test "$code" = "200"
-          code=$(curl -s -o /dev/null -w "%{http_code}" https://deal-desk-blond-psi.vercel.app/login)
+          code=$(curl -s -o /dev/null -w "%{http_code}" "$FRONTEND_URL/login")
           echo "/login -> $code"; test "$code" = "200"
-          code=$(curl -s -o /dev/null -w "%{http_code}" https://deal-desk-blond-psi.vercel.app/deals)
+          code=$(curl -s -o /dev/null -w "%{http_code}" "$FRONTEND_URL/deals")
           echo "/deals -> $code"; test "$code" = "200"
           # confirm the deployed bundle is the pushed commit
-          fe_commit=$(curl -s https://deal-desk-blond-psi.vercel.app/ | grep -o 'name="app-commit" content="[^"]*"' | sed 's/.*content="//;s/"//' | cut -c1-12)
+          fe_commit=$(curl -s "$FRONTEND_URL/" | grep -o 'name="app-commit" content="[^"]*"' | sed 's/.*content="//;s/"//' | cut -c1-12)
           target="${GITHUB_SHA:0:12}"
           echo "deployed frontend commit: $fe_commit (target: $target)"
           test "$fe_commit" = "$target"
